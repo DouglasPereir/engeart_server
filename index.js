@@ -657,7 +657,7 @@ app.post("/pedidos", async (req, res) => {
 
   request({
     method: 'GET',
-    url: INCLUDE_PATH + 'api/v3/payments?name=' + req.body.nome + '&cpfCnpj=&' + req.body.cpf + '&offset=' + req.body.offset + '&limit=' + req.body.limit,
+    url: INCLUDE_PATH + 'api/v3/payments?name=Luana Caroline Oliveira Pereira&cpfCnpj=&47321266850&offset=' + req.body.offset + '&limit=' + req.body.limit,
     headers: {
       'access_token': INCLUDE_KEY
     }
