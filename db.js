@@ -3,8 +3,7 @@ async function connect() {
         return global.connection;
 
     const mysql = require("mysql2/promise");
-    const connection = await mysql.createConnection("mysql://root:@localhost:3306/engeart_database");
-    // const connection = await mysql.createConnection("mysql://empren06_teste:123456@localhost:3306/empren06_testes");
+    const connection = await mysql.createConnection("mysql://empren06_admin:Enga1a2a3a4@ns973.hostgator.com.br:3306/empren06_database");
     console.log("Conectou no MySQL!");
     global.connection = connection;
     return connection;
