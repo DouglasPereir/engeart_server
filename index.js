@@ -165,21 +165,28 @@ app.post("/pagamentos/credito/:id", async (req, res) => {
               } else { // NÃO EXISTE NENHUM ERRO INTERNO (SUCESSO | FIM)
                 // CADASTRAR PEDIDO NO BANCO DE DADOS
                 (async () => {
-                  let dadosPedido = {
-                    dados_cobranca: novaCobranca,
-                    dados_pedido: dados_pedido
-                  }
-                  const result = await db.cadastrarPedido(dadosPedido);
-                  if (result.status == "success") {
+                  try {
+                    let dadosPedido = {
+                      dados_cobranca: novaCobranca,
+                      dados_pedido: dados_pedido
+                    }
+                    const result = await db.cadastrarPedido(dadosPedido);
+                    if (result.status == "success") {
+                      res.send({
+                        success: 'Success',
+                        object: novaCobranca.object,
+                        message: novaCobranca
+                      })
+                    } else {
+                      res.send({
+                        success: 'Error',
+                        message: result.message
+                      })
+                    }
+                  } catch (errorCadastrarProdutoPedido) {
                     res.send({
-                      success: 'Success',
-                      object: novaCobranca.object,
-                      message: novaCobranca
-                    })
-                  } else {
-                    res.send({
-                      success: 'Error',
-                      message: result.message
+                      error: 'Error',
+                      message: errorCadastrarProdutoPedido.message
                     })
                   }
                 })();
@@ -436,23 +443,28 @@ app.post("/pagamentos/boleto_pix", async (req, res) => {
               } else { // NÃO EXISTE NENHUM ERRO INTERNO (SUCESSO | FIM)
                 // CADASTRAR PEDIDO NO BANCO DE DADOS
                 (async () => {
-                  console.log('Começou!');
-
-                  let dadosPedido = {
-                    dados_cobranca: novaCobranca,
-                    dados_pedido: dados_pedido
-                  }
-                  const result = await db.cadastrarPedido(dadosPedido);
-                  if (result.status == "success") {
+                  try {
+                    let dadosPedido = {
+                      dados_cobranca: novaCobranca,
+                      dados_pedido: dados_pedido
+                    }
+                    const result = await db.cadastrarPedido(dadosPedido);
+                    if (result.status == "success") {
+                      res.send({
+                        success: 'Success',
+                        object: novaCobranca.object,
+                        message: novaCobranca
+                      })
+                    } else {
+                      res.send({
+                        success: 'Error',
+                        message: result.message
+                      })
+                    }
+                  } catch (errorCadastrarProdutoPedido) {
                     res.send({
-                      success: 'Success',
-                      object: novaCobranca.object,
-                      message: novaCobranca
-                    })
-                  } else {
-                    res.send({
-                      success: 'Error',
-                      message: result.message
+                      error: 'Error',
+                      message: errorCadastrarProdutoPedido.message
                     })
                   }
                 })();
@@ -539,24 +551,28 @@ app.post("/pagamentos/boleto_pix", async (req, res) => {
                     } else { // NÃO EXISTE NENHUM ERRO INTERNO (SUCESSO | FIM)
                       // CADASTRAR PEDIDO NO BANCO DE DADOS
                       (async () => {
-                        console.log('Começou!');
-
-                        let dadosPedido = {
-                          dados_cobranca: novaCobranca,
-                          dados_pedido: dados_pedido
-                        }
-                        const result = await db.cadastrarPedido(dadosPedido);
-                        if (result.status == "success") {
+                        try {
+                          let dadosPedido = {
+                            dados_cobranca: novaCobranca,
+                            dados_pedido: dados_pedido
+                          }
+                          const result = await db.cadastrarPedido(dadosPedido);
+                          if (result.status == "success") {
+                            res.send({
+                              success: 'Success',
+                              object: novaCobranca.object,
+                              message: novaCobranca
+                            })
+                          } else {
+                            res.send({
+                              success: 'Error',
+                              message: result.message
+                            })
+                          }
+                        } catch (errorCadastrarProdutoPedido) {
                           res.send({
-                            success: 'Success',
-                            object: novaCobranca.object,
-                            message: novaCobranca
-                          })
-                        } else {
-                          res.send({
-                            success: 'Error',
-                            object: result.object,
-                            message: result.message
+                            error: 'Error',
+                            message: errorCadastrarProdutoPedido.message
                           })
                         }
                       })();
@@ -735,4 +751,4 @@ app.post("/recuperar-pedido", async (req, res) => {
   })();
 });
 
-app.listen(3000, () => console.log("Servidor rodando na porta 3000 do projeto 1.0.2!"));
+app.listen(3000, () => console.log("Servidor rodando na porta 3000, projeto 1.0.3!"));
