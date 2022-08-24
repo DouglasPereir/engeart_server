@@ -614,12 +614,18 @@ app.post("/cobrancas", async (req, res) => {
           'Content-Type': 'application/json',
           'access_token': INCLUDE_KEY
         }
-      }, function (reqPIX, resPIX) {
-        console.log();
-        res.send({
-          dados_cobranca: JSON.parse(resCobranca.body).data[0],
-          dados_pagamento: JSON.parse(resPIX.body)
-        })
+      }, async (reqPIX, resPIX) => {
+        try {
+          await res.send({
+            dados_cobranca: JSON.parse(resCobranca.body).data[0],
+            dados_pagamento: JSON.parse(resPIX.body)
+          })
+        } catch (errorPIX) {
+          res.send({
+            error: 'Error',
+            message: errorPIX.message
+          })
+        }
       });
     } else if (JSON.parse(resCobranca.body).data[0].billingType == "BOLETO") {
       request({
@@ -629,11 +635,18 @@ app.post("/cobrancas", async (req, res) => {
           'Content-Type': 'application/json',
           'access_token': INCLUDE_KEY
         }
-      }, function (reqBoleto, resBoleto) {
-        res.send({
-          dados_cobranca: JSON.parse(resCobranca.body).data[0],
-          dados_pagamento: JSON.parse(resBoleto.body)
-        })
+      }, async (reqBoleto, resBoleto) => {
+        try {
+          await res.send({
+            dados_cobranca: JSON.parse(resCobranca.body).data[0],
+            dados_pagamento: JSON.parse(resBoleto.body)
+          })
+        } catch (errorBoleto) {
+          res.send({
+            error: 'Error',
+            message: errorBoleto.message
+          })
+        }
       });
     } else if (JSON.parse(resCobranca.body).data[0].billingType == "CREDIT_CARD") {
       request({
@@ -643,11 +656,18 @@ app.post("/cobrancas", async (req, res) => {
           'Content-Type': 'application/json',
           'access_token': INCLUDE_KEY
         }
-      }, function (reqBoleto, resBoleto) {
-        res.send({
-          dados_cobranca: JSON.parse(resCobranca.body).data[0],
-          dados_pagamento: JSON.parse(resBoleto.body)
-        })
+      }, async (reqCreditCard, resCreditCard) => {
+        try {
+          await res.send({
+            dados_cobranca: JSON.parse(resCobranca.body).data[0],
+            dados_pagamento: JSON.parse(resCreditCard.body)
+          })
+        } catch (errorCreditCard) {
+          res.send({
+            error: 'Error',
+            message: errorCreditCard.message
+          })
+        }
       });
     }
   });
@@ -677,7 +697,7 @@ app.post("/pedidos", async (req, res) => {
         }, async (reqCobranca, resCobranca) => {
           try {
             await res.send(JSON.parse(resCobranca.body));
-          } catch (error) {
+          } catch (errorCobranca) {
             res.send({
               error: 'Error',
               message: 'Ocorreu um erro ao recuperar os dados do seu pedido'
