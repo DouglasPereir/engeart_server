@@ -13,6 +13,8 @@ app.use(express.static("public"));
 app.use(express.json());
 
 app.post("/pagamentos/credito/:id", async (req, res) => {
+  // TODO: -> Verificar erro ao processar pagamento com o token do cartão (o cartão foi ultilizado muitas vezes);
+
   const INCLUDE_PATH = "https://sandbox.asaas.com/";
   const INCLUDE_KEY = "$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwMzc4OTg6OiRhYWNoXzQzNzI2NTBhLTZmZjktNDg0Yi04Y2VlLWU3MDZhZDVlZmRlNA";
   try {
@@ -657,12 +659,43 @@ app.post("/pedidos", async (req, res) => {
 
   request({
     method: 'GET',
-    url: INCLUDE_PATH + 'api/v3/payments?name=Luana Caroline Oliveira Pereira&cpfCnpj=&47321266850&offset=' + req.body.offset + '&limit=' + req.body.limit,
+    url: INCLUDE_PATH + 'api/v3/customers?name=' + req.body.nome + '&cpfCnpj=' + req.body.cpf,
     headers: {
       'access_token': INCLUDE_KEY
     }
-  }, function (reqCobranca, resCobranca) {
-    res.send(JSON.parse(resCobranca.body));
+  }, async (reqCliente, resCliente) => {
+    try {
+      let clienteId = await JSON.parse(resCliente.body).data[0].id;
+      if (clienteId && clienteId.length) {
+        // O ID DO CLIENTE FOI RECUPERADO NO ASAAS -> REALIZAR A CONSULTA PELAS COBRANÇAS PELO ID DO CLIENTE
+        request({
+          method: 'GET',
+          url: INCLUDE_PATH + 'api/v3/payments?customer=' + clienteId + '&offset=' + req.body.offset + '&limit=' + req.body.limit,
+          headers: {
+            'access_token': INCLUDE_KEY
+          }
+        }, async (reqCobranca, resCobranca) => {
+          try {
+            await res.send(JSON.parse(resCobranca.body));
+          } catch (error) {
+            res.send({
+              error: 'Error',
+              message: 'Ocorreu um erro ao recuperar os dados do seu pedido'
+            })
+          }
+        });
+      } else {
+        res.send({
+          error: 'Error',
+          message: 'O cliente não foi encontrado em nossa base de dados'
+        })
+      }
+    } catch (errorRecuperaCliente) {
+      res.send({
+        error: 'Error',
+        message: errorRecuperaCliente.message
+      })
+    }
   });
 });
 
@@ -682,13 +715,4 @@ app.post("/recuperar-pedido", async (req, res) => {
   })();
 });
 
-app.post("/testeMySql", async (req, res) => {
-  console.log(req.body);
-});
-
-app.post("/errors", (req, res) => {
-  console.log("Teve erro!");
-  console.log(req.body);
-})
-
-app.listen(3000, () => console.log("Servidor rodando na porta 4242!"));
+app.listen(3000, () => console.log("Servidor rodando na porta 3000!"));
