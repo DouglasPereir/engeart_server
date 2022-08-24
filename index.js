@@ -735,4 +735,4 @@ app.post("/recuperar-pedido", async (req, res) => {
   })();
 });
 
-app.listen(3000, () => console.log("Servidor rodando na porta 3000!"));
+app.listen(3000, () => console.log("Servidor rodando na porta 3000 do projeto 1.0.2!"));
