@@ -45,18 +45,22 @@ async function cadastrarPedido(pedido) {
         await pedido.dados_pedido.map((dataRequest) => {
             try {
                 (async () => {
-                    const conn = await connect();
-                    const sql = 'INSERT INTO `tb_admin.pedidos` VALUES (null,?,?,?,?,?,?,?,?,?,?,NOW(),NOW(),?);';
-                    const values = [dataRequest.titulo, dataRequest.id, pedido.dados_cobranca.id, pedido.dados_cobranca.externalReference, dataRequest.quantidade, dataRequest.precoTabela, dataRequest.desconto, "PERCENTUAL", "ONLINE", dataRequest.capa, JSON.stringify(dataRequest)];
-                    await conn.query(sql, values);
+                    try {
+                        const conn = await connect();
+                        const sql = 'INSERT INTO `tb_admin.pedidos` VALUES (null,?,?,?,?,?,?,?,?,?,?,NOW(),NOW(),?);';
+                        const values = [dataRequest.titulo, dataRequest.id, pedido.dados_cobranca.id, pedido.dados_cobranca.externalReference, dataRequest.quantidade, dataRequest.precoTabela, dataRequest.desconto, "PERCENTUAL", "ONLINE", dataRequest.capa, JSON.stringify(dataRequest)];
+                        await conn.query(sql, values);
+                    } catch (error) {
+                        return ({ status: "error", message: error.meessage });
+                    }
                 })()
             } catch (error) {
-                return ({status: "error", message: error.meessage});
+                return ({ status: "error", message: error.meessage });
             }
         })
-        return ({status: "success", object: "DB", message: "Pedido cadastrado com sucesso!"});
+        return ({ status: "success", object: "DB", message: "Pedido cadastrado com sucesso!" });
     } catch (error) {
-        return ({status: "error", message: error.meessage});
+        return ({ status: "error", message: error.meessage });
     }
 }
 
